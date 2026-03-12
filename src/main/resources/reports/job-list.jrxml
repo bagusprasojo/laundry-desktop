@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="job_list_report" pageWidth="842" pageHeight="595" orientation="Landscape"
+              columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+
+    <parameter name="reportTitle" class="java.lang.String"/>
+    <parameter name="periodLabel" class="java.lang.String"/>
+    <parameter name="generatedAt" class="java.lang.String"/>
+    <parameter name="businessName" class="java.lang.String"/>
+    <parameter name="businessAddress" class="java.lang.String"/>
+    <parameter name="businessOwner" class="java.lang.String"/>
+    <parameter name="businessPhone" class="java.lang.String"/>
+
+    <field name="invoiceNo" class="java.lang.String"/>
+    <field name="orderDate" class="java.lang.String"/>
+    <field name="customerName" class="java.lang.String"/>
+    <field name="serviceName" class="java.lang.String"/>
+    <field name="speedName" class="java.lang.String"/>
+    <field name="unitName" class="java.lang.String"/>
+    <field name="quantity" class="java.lang.Double"/>
+    <field name="totalPrice" class="java.lang.Integer"/>
+    <field name="orderStatus" class="java.lang.String"/>
+    <field name="paymentStatus" class="java.lang.String"/>
+
+    <title>
+        <band height="104">
+            <textField>
+                <reportElement x="0" y="0" width="450" height="18"/>
+                <textElement>
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{businessName}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="18" width="450" height="14"/>
+                <textFieldExpression><![CDATA["Alamat: " + $P{businessAddress}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="32" width="450" height="14"/>
+                <textFieldExpression><![CDATA["Telp: " + $P{businessPhone}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="560" y="0" width="242" height="14"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA["Dicetak: " + $P{generatedAt}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="60" width="450" height="20"/>
+                <textElement>
+                    <font size="14" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{reportTitle}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="80" width="450" height="16"/>
+                <textFieldExpression><![CDATA["Periode: " + $P{periodLabel}]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+
+    <columnHeader>
+        <band height="20">
+            <staticText>
+                <reportElement x="0" y="0" width="95" height="20" backcolor="#DDF0FF" mode="Opaque"/>
+                <box><pen lineWidth="0.5"/></box>
+                <textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true"/></textElement>
+                <text><![CDATA[Invoice]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="95" y="0" width="70" height="20" backcolor="#DDF0FF" mode="Opaque"/>
+                <box><pen lineWidth="0.5"/></box>
+                <textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true"/></textElement>
+                <text><![CDATA[Tanggal]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="165" y="0" width="130" height="20" backcolor="#DDF0FF" mode="Opaque"/>
+                <box><pen lineWidth="0.5"/></box>
+                <textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true"/></textElement>
+                <text><![CDATA[Pelanggan]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="295" y="0" width="120" height="20" backcolor="#DDF0FF" mode="Opaque"/>
+                <box><pen lineWidth="0.5"/></box>
+                <textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true"/></textElement>
+                <text><![CDATA[Layanan]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="415" y="0" width="80" height="20" backcolor="#DDF0FF" mode="Opaque"/>
+                <box><pen lineWidth="0.5"/></box>
+                <textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true"/></textElement>
+                <text><![CDATA[Kecepatan]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="495" y="0" width="55" height="20" backcolor="#DDF0FF" mode="Opaque"/>
+                <box><pen lineWidth="0.5"/></box>
+                <textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true"/></textElement>
+                <text><![CDATA[Satuan]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="550" y="0" width="50" height="20" backcolor="#DDF0FF" mode="Opaque"/>
+                <box><pen lineWidth="0.5"/></box>
+                <textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true"/></textElement>
+                <text><![CDATA[Qty]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="600" y="0" width="80" height="20" backcolor="#DDF0FF" mode="Opaque"/>
+                <box><pen lineWidth="0.5"/></box>
+                <textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true"/></textElement>
+                <text><![CDATA[Total]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="680" y="0" width="65" height="20" backcolor="#DDF0FF" mode="Opaque"/>
+                <box><pen lineWidth="0.5"/></box>
+                <textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true"/></textElement>
+                <text><![CDATA[Order]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="745" y="0" width="57" height="20" backcolor="#DDF0FF" mode="Opaque"/>
+                <box><pen lineWidth="0.5"/></box>
+                <textElement textAlignment="Center" verticalAlignment="Middle"><font isBold="true"/></textElement>
+                <text><![CDATA[Bayar]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+
+    <detail>
+        <band height="18">
+            <textField>
+                <reportElement x="0" y="0" width="95" height="18"/>
+                <box><pen lineWidth="0.5"/></box>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{invoiceNo}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="95" y="0" width="70" height="18"/>
+                <box><pen lineWidth="0.5"/></box>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{orderDate}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="165" y="0" width="130" height="18"/>
+                <box><pen lineWidth="0.5"/></box>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{customerName}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="295" y="0" width="120" height="18"/>
+                <box><pen lineWidth="0.5"/></box>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{serviceName}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="415" y="0" width="80" height="18"/>
+                <box><pen lineWidth="0.5"/></box>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{speedName}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="495" y="0" width="55" height="18"/>
+                <box><pen lineWidth="0.5"/></box>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{unitName}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="550" y="0" width="50" height="18"/>
+                <box><pen lineWidth="0.5"/></box>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="600" y="0" width="80" height="18"/>
+                <box><pen lineWidth="0.5"/></box>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA["Rp" + $F{totalPrice}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="680" y="0" width="65" height="18"/>
+                <box><pen lineWidth="0.5"/></box>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{orderStatus}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="745" y="0" width="57" height="18"/>
+                <box><pen lineWidth="0.5"/></box>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{paymentStatus}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+</jasperReport>

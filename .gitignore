@@ -1,0 +1,19 @@
+﻿target/
+out/
+build/
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+.settings/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local app data
+/.laundry-desktop/
+
+# Logs
+*.log
