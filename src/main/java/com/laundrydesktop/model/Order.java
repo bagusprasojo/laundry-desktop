@@ -15,6 +15,7 @@ public record Order(
         String paymentMethod,
         int downPayment,
         int paidAmount,
+        String note,
         String orderDate,
         String estimateDone
 ) {

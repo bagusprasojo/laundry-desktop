@@ -36,7 +36,8 @@ public class DatabaseInitializer {
             stmt.execute("""
                 CREATE TABLE IF NOT EXISTS speeds (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    name TEXT NOT NULL UNIQUE
+                    name TEXT NOT NULL UNIQUE,
+                    duration_hours INTEGER NOT NULL DEFAULT 48
                 )
             """);
 
@@ -84,14 +85,40 @@ public class DatabaseInitializer {
                     payment_method TEXT,
                     down_payment INTEGER NOT NULL DEFAULT 0,
                     paid_amount INTEGER NOT NULL DEFAULT 0,
+                    note TEXT NOT NULL DEFAULT '',
                     order_date TEXT NOT NULL,
                     estimate_done TEXT NOT NULL,
                     FOREIGN KEY(customer_id) REFERENCES customers(id)
                 )
             """);
 
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS payment_transactions (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    invoice_no TEXT NOT NULL,
+                    payment_date TEXT NOT NULL,
+                    amount INTEGER NOT NULL,
+                    payment_method TEXT,
+                    note TEXT NOT NULL DEFAULT '',
+                    FOREIGN KEY(invoice_no) REFERENCES orders(invoice_no)
+                )
+            """);
+
+            try {
+                stmt.execute("ALTER TABLE orders ADD COLUMN note TEXT NOT NULL DEFAULT ''");
+            } catch (SQLException ignored) {
+                // Kolom sudah ada pada database lama/baru.
+            }
+            try {
+                stmt.execute("ALTER TABLE speeds ADD COLUMN duration_hours INTEGER NOT NULL DEFAULT 48");
+            } catch (SQLException ignored) {
+                // Kolom sudah ada pada database lama/baru.
+            }
+
             stmt.execute("CREATE INDEX IF NOT EXISTS idx_orders_date ON orders(order_date)");
             stmt.execute("CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(order_status)");
+            stmt.execute("CREATE INDEX IF NOT EXISTS idx_payment_tx_date ON payment_transactions(payment_date)");
+            stmt.execute("CREATE INDEX IF NOT EXISTS idx_payment_tx_invoice ON payment_transactions(invoice_no)");
 
             seedDefaults(stmt);
         } catch (SQLException e) {
@@ -111,9 +138,12 @@ public class DatabaseInitializer {
         """);
 
         stmt.execute("""
-            INSERT OR IGNORE INTO speeds(name)
-            VALUES ('Normal'), ('Express'), ('Super Express')
+            INSERT OR IGNORE INTO speeds(name, duration_hours)
+            VALUES ('Normal', 48), ('Express', 24), ('Super Express', 6)
         """);
+        stmt.execute("UPDATE speeds SET duration_hours = 48 WHERE lower(name) = 'normal'");
+        stmt.execute("UPDATE speeds SET duration_hours = 24 WHERE lower(name) = 'express'");
+        stmt.execute("UPDATE speeds SET duration_hours = 6 WHERE lower(name) = 'super express'");
 
         stmt.execute("""
             INSERT OR IGNORE INTO units(name)

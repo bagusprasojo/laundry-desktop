@@ -2,6 +2,7 @@ package com.laundrydesktop.view;
 
 import com.laundrydesktop.model.Order;
 import com.laundrydesktop.repo.OrderRepository;
+import com.laundrydesktop.repo.PaymentTransactionRepository;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -16,8 +17,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.time.LocalDate;
+
 public class PickupView {
     private final OrderRepository orderRepository = new OrderRepository();
+    private final PaymentTransactionRepository paymentTransactionRepository = new PaymentTransactionRepository();
 
     private final TableView<Order> table = new TableView<>();
     private final ComboBox<String> paymentMethodCombo = new ComboBox<>();
@@ -117,6 +121,15 @@ public class PickupView {
                 "Sudah Diambil",
                 paymentMethodCombo.getValue()
         );
+        if (additional > 0) {
+            paymentTransactionRepository.create(
+                    selected.invoiceNo(),
+                    LocalDate.now().toString(),
+                    additional,
+                    paymentMethodCombo.getValue(),
+                    "Pembayaran saat pengambilan"
+            );
+        }
         infoLabel.setText("Pengambilan berhasil diproses.");
         additionalPaymentField.setText("0");
         refreshData();

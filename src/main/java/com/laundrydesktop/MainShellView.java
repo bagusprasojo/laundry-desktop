@@ -5,10 +5,12 @@ import com.laundrydesktop.repo.UserRepository;
 import com.laundrydesktop.view.CustomerView;
 import com.laundrydesktop.view.DashboardView;
 import com.laundrydesktop.view.BusinessProfileView;
+import com.laundrydesktop.view.CashInReportView;
 import com.laundrydesktop.view.JobListView;
 import com.laundrydesktop.view.MasterItemView;
 import com.laundrydesktop.view.PickupView;
 import com.laundrydesktop.view.ServicePriceView;
+import com.laundrydesktop.view.SpeedView;
 import com.laundrydesktop.view.TransactionView;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -130,18 +132,20 @@ public class MainShellView {
         transaksiMenu = new Menu("Transaksi");
         MenuItem hargaItem = new MenuItem("Setting harga layanan");
         MenuItem terimaItem = new MenuItem("Terima pekerjaan");
-        MenuItem pengambilanItem = new MenuItem("pengambilan");
+        MenuItem pengambilanItem = new MenuItem("Pengambilan");
         hargaItem.setOnAction(e -> handleMenuAction("Setting harga layanan", mainStage));
         terimaItem.setOnAction(e -> handleMenuAction("Terima pekerjaan", mainStage));
-        pengambilanItem.setOnAction(e -> handleMenuAction("pengambilan", mainStage));
+        pengambilanItem.setOnAction(e -> handleMenuAction("Pengambilan", mainStage));
         transaksiMenu.getItems().addAll(hargaItem, terimaItem, pengambilanItem);
 
         laporanMenu = new Menu("Laporan");
         MenuItem dashboardItem = new MenuItem("Dashboard");
         MenuItem daftarPekerjaanItem = new MenuItem("Daftar Pekerjaan");
+        MenuItem kasMasukItem = new MenuItem("Kas Masuk");
         dashboardItem.setOnAction(e -> handleMenuAction("Dashboard", mainStage));
         daftarPekerjaanItem.setOnAction(e -> handleMenuAction("Daftar Pekerjaan", mainStage));
-        laporanMenu.getItems().addAll(dashboardItem, daftarPekerjaanItem);
+        kasMasukItem.setOnAction(e -> handleMenuAction("Kas Masuk", mainStage));
+        laporanMenu.getItems().addAll(dashboardItem, daftarPekerjaanItem, kasMasukItem);
 
         MenuBar menuBar = new MenuBar(fileMenu, masterDataMenu, transaksiMenu, laporanMenu);
         return menuBar;
@@ -158,7 +162,7 @@ public class MainShellView {
 
         pengambilanToolbarButton = new Button("Pengambilan");
         pengambilanToolbarButton.setGraphic(createPickupIcon());
-        pengambilanToolbarButton.setOnAction(e -> handleMenuAction("pengambilan", mainStage));
+        pengambilanToolbarButton.setOnAction(e -> handleMenuAction("Pengambilan", mainStage));
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
@@ -206,7 +210,7 @@ public class MainShellView {
                 if (ensureLoggedIn()) openMdiChild("Master Satuan", new MasterItemView("units", "Master Satuan", null).build());
             }
             case "Kecepatan" -> {
-                if (ensureLoggedIn()) openMdiChild("Master Kecepatan", new MasterItemView("speeds", "Master Kecepatan", null).build());
+                if (ensureLoggedIn()) openMdiChild("Master Kecepatan", new SpeedView(null).build());
             }
             case "Setting harga layanan" -> {
                 if (ensureLoggedIn()) openMdiChild("Setting Harga Layanan", new ServicePriceView(null).build());
@@ -214,7 +218,7 @@ public class MainShellView {
             case "Terima pekerjaan" -> {
                 if (ensureLoggedIn()) openMdiChild("Terima Pekerjaan", new TransactionView(null).build());
             }
-            case "pengambilan" -> {
+            case "Pengambilan" -> {
                 if (ensureLoggedIn()) openMdiChild("Pengambilan", new PickupView().build());
             }
             case "Dashboard" -> {
@@ -222,6 +226,9 @@ public class MainShellView {
             }
             case "Daftar Pekerjaan" -> {
                 if (ensureLoggedIn()) openMdiChild("Daftar Pekerjaan", new JobListView().build());
+            }
+            case "Kas Masuk" -> {
+                if (ensureLoggedIn()) openMdiChild("Kas Masuk", new CashInReportView().build());
             }
             default -> {
             }

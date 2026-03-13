@@ -17,8 +17,8 @@ public class OrderRepository {
                 INSERT INTO orders(
                     invoice_no, customer_id, service_name, speed_name, unit_name, quantity,
                     unit_price, total_price, order_status, payment_status, payment_method,
-                    down_payment, paid_amount, order_date, estimate_done
-                ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                    down_payment, paid_amount, note, order_date, estimate_done
+                ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
                 """;
         try (Connection conn = DatabaseManager.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, order.invoiceNo());
@@ -34,8 +34,9 @@ public class OrderRepository {
             ps.setString(11, order.paymentMethod());
             ps.setInt(12, order.downPayment());
             ps.setInt(13, order.paidAmount());
-            ps.setString(14, order.orderDate());
-            ps.setString(15, order.estimateDone());
+            ps.setString(14, order.note());
+            ps.setString(15, order.orderDate());
+            ps.setString(16, order.estimateDone());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Gagal menyimpan order", e);
@@ -47,7 +48,7 @@ public class OrderRepository {
         String sql = """
                 SELECT o.invoice_no, o.customer_id, c.name customer_name, o.service_name, o.speed_name, o.unit_name,
                        o.quantity, o.unit_price, o.total_price, o.order_status, o.payment_status, o.payment_method,
-                       o.down_payment, o.paid_amount, o.order_date, o.estimate_done
+                       o.down_payment, o.paid_amount, o.note, o.order_date, o.estimate_done
                 FROM orders o
                 JOIN customers c ON c.id = o.customer_id
                 WHERE o.order_date = ?
@@ -71,7 +72,7 @@ public class OrderRepository {
         String sql = """
                 SELECT o.invoice_no, o.customer_id, c.name customer_name, o.service_name, o.speed_name, o.unit_name,
                        o.quantity, o.unit_price, o.total_price, o.order_status, o.payment_status, o.payment_method,
-                       o.down_payment, o.paid_amount, o.order_date, o.estimate_done
+                       o.down_payment, o.paid_amount, o.note, o.order_date, o.estimate_done
                 FROM orders o
                 JOIN customers c ON c.id = o.customer_id
                 ORDER BY o.id DESC
@@ -93,7 +94,7 @@ public class OrderRepository {
         String sql = """
                 SELECT o.invoice_no, o.customer_id, c.name customer_name, o.service_name, o.speed_name, o.unit_name,
                        o.quantity, o.unit_price, o.total_price, o.order_status, o.payment_status, o.payment_method,
-                       o.down_payment, o.paid_amount, o.order_date, o.estimate_done
+                       o.down_payment, o.paid_amount, o.note, o.order_date, o.estimate_done
                 FROM orders o
                 JOIN customers c ON c.id = o.customer_id
                 WHERE o.order_date >= ? AND o.order_date <= ?
@@ -118,7 +119,7 @@ public class OrderRepository {
         String sql = """
                 SELECT o.invoice_no, o.customer_id, c.name customer_name, o.service_name, o.speed_name, o.unit_name,
                        o.quantity, o.unit_price, o.total_price, o.order_status, o.payment_status, o.payment_method,
-                       o.down_payment, o.paid_amount, o.order_date, o.estimate_done
+                       o.down_payment, o.paid_amount, o.note, o.order_date, o.estimate_done
                 FROM orders o
                 JOIN customers c ON c.id = o.customer_id
                 WHERE o.order_status <> 'Sudah Diambil'
@@ -133,6 +134,76 @@ public class OrderRepository {
             return orders;
         } catch (SQLException e) {
             throw new RuntimeException("Gagal mengambil order belum diambil", e);
+        }
+    }
+
+    public int countByKeyword(String keyword) {
+        String search = "%" + keyword.toLowerCase() + "%";
+        String sql = """
+                SELECT COUNT(1)
+                FROM orders o
+                JOIN customers c ON c.id = o.customer_id
+                WHERE lower(o.invoice_no) LIKE ?
+                   OR lower(c.name) LIKE ?
+                   OR lower(o.service_name) LIKE ?
+                   OR lower(o.order_date) LIKE ?
+                   OR lower(o.order_status) LIKE ?
+                   OR lower(o.payment_status) LIKE ?
+                   OR lower(o.note) LIKE ?
+                """;
+        try (Connection conn = DatabaseManager.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, search);
+            ps.setString(2, search);
+            ps.setString(3, search);
+            ps.setString(4, search);
+            ps.setString(5, search);
+            ps.setString(6, search);
+            ps.setString(7, search);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getInt(1) : 0;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Gagal menghitung riwayat order", e);
+        }
+    }
+
+    public List<Order> findPagedByKeyword(String keyword, int limit, int offset) {
+        List<Order> orders = new ArrayList<>();
+        String search = "%" + keyword.toLowerCase() + "%";
+        String sql = """
+                SELECT o.invoice_no, o.customer_id, c.name customer_name, o.service_name, o.speed_name, o.unit_name,
+                       o.quantity, o.unit_price, o.total_price, o.order_status, o.payment_status, o.payment_method,
+                       o.down_payment, o.paid_amount, o.note, o.order_date, o.estimate_done
+                FROM orders o
+                JOIN customers c ON c.id = o.customer_id
+                WHERE lower(o.invoice_no) LIKE ?
+                   OR lower(c.name) LIKE ?
+                   OR lower(o.service_name) LIKE ?
+                   OR lower(o.order_date) LIKE ?
+                   OR lower(o.order_status) LIKE ?
+                   OR lower(o.payment_status) LIKE ?
+                   OR lower(o.note) LIKE ?
+                ORDER BY o.id DESC
+                LIMIT ? OFFSET ?
+                """;
+        try (Connection conn = DatabaseManager.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, search);
+            ps.setString(2, search);
+            ps.setString(3, search);
+            ps.setString(4, search);
+            ps.setString(5, search);
+            ps.setString(6, search);
+            ps.setString(7, search);
+            ps.setInt(8, limit);
+            ps.setInt(9, offset);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    orders.add(map(rs));
+                }
+            }
+            return orders;
+        } catch (SQLException e) {
+            throw new RuntimeException("Gagal mengambil riwayat order paginasi", e);
         }
     }
 
@@ -154,6 +225,59 @@ public class OrderRepository {
         }
     }
 
+    public void updateOrder(Order order) {
+        String sql = """
+                UPDATE orders
+                SET customer_id = ?,
+                    service_name = ?,
+                    speed_name = ?,
+                    unit_name = ?,
+                    quantity = ?,
+                    unit_price = ?,
+                    total_price = ?,
+                    order_status = ?,
+                    payment_status = ?,
+                    payment_method = ?,
+                    down_payment = ?,
+                    paid_amount = ?,
+                    note = ?,
+                    order_date = ?,
+                    estimate_done = ?
+                WHERE invoice_no = ?
+                """;
+        try (Connection conn = DatabaseManager.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, order.customerId());
+            ps.setString(2, order.serviceName());
+            ps.setString(3, order.speedName());
+            ps.setString(4, order.unitName());
+            ps.setDouble(5, order.quantity());
+            ps.setInt(6, order.unitPrice());
+            ps.setInt(7, order.totalPrice());
+            ps.setString(8, order.orderStatus());
+            ps.setString(9, order.paymentStatus());
+            ps.setString(10, order.paymentMethod());
+            ps.setInt(11, order.downPayment());
+            ps.setInt(12, order.paidAmount());
+            ps.setString(13, order.note());
+            ps.setString(14, order.orderDate());
+            ps.setString(15, order.estimateDone());
+            ps.setString(16, order.invoiceNo());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Gagal memperbarui order", e);
+        }
+    }
+
+    public void deleteByInvoiceNo(String invoiceNo) {
+        String sql = "DELETE FROM orders WHERE invoice_no = ?";
+        try (Connection conn = DatabaseManager.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, invoiceNo);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Gagal menghapus order", e);
+        }
+    }
+
     private Order map(ResultSet rs) throws SQLException {
         return new Order(
                 rs.getString("invoice_no"),
@@ -170,6 +294,7 @@ public class OrderRepository {
                 rs.getString("payment_method"),
                 rs.getInt("down_payment"),
                 rs.getInt("paid_amount"),
+                rs.getString("note"),
                 rs.getString("order_date"),
                 rs.getString("estimate_done")
         );

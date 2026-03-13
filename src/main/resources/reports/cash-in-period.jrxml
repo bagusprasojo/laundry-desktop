@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="cash_in_period"
+              pageWidth="595"
+              pageHeight="842"
+              columnWidth="555"
+              leftMargin="20"
+              rightMargin="20"
+              topMargin="20"
+              bottomMargin="20"
+              whenNoDataType="AllSectionsNoDetail"
+              uuid="6727e77e-77eb-4fc1-871e-f2704450ca8d">
+
+    <parameter name="reportTitle" class="java.lang.String"/>
+    <parameter name="periodLabel" class="java.lang.String"/>
+    <parameter name="generatedAt" class="java.lang.String"/>
+    <parameter name="businessName" class="java.lang.String"/>
+    <parameter name="businessAddress" class="java.lang.String"/>
+    <parameter name="businessPhone" class="java.lang.String"/>
+    <parameter name="totalCashIn" class="java.lang.Integer"/>
+
+    <field name="paymentDate" class="java.lang.String"/>
+    <field name="invoiceNo" class="java.lang.String"/>
+    <field name="customerName" class="java.lang.String"/>
+    <field name="paymentMethod" class="java.lang.String"/>
+    <field name="amount" class="java.lang.Integer"/>
+    <field name="note" class="java.lang.String"/>
+
+    <title>
+        <band height="95">
+            <textField>
+                <reportElement x="0" y="0" width="330" height="20"/>
+                <textElement><font size="14" isBold="true"/></textElement>
+                <textFieldExpression><![CDATA[$P{businessName}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="22" width="330" height="16"/>
+                <textElement><font size="10"/></textElement>
+                <textFieldExpression><![CDATA[$P{businessAddress}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="40" width="330" height="16"/>
+                <textElement><font size="10"/></textElement>
+                <textFieldExpression><![CDATA["Telp: " + $P{businessPhone}]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="330" y="0" width="225" height="20"/>
+                <textElement textAlignment="Right"><font size="13" isBold="true"/></textElement>
+                <textFieldExpression><![CDATA[$P{reportTitle}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="330" y="22" width="225" height="16"/>
+                <textElement textAlignment="Right"><font size="10"/></textElement>
+                <textFieldExpression><![CDATA["Periode: " + $P{periodLabel}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="330" y="40" width="225" height="16"/>
+                <textElement textAlignment="Right"><font size="10"/></textElement>
+                <textFieldExpression><![CDATA["Cetak: " + $P{generatedAt}]]></textFieldExpression>
+            </textField>
+            <line>
+                <reportElement x="0" y="72" width="555" height="1"/>
+            </line>
+        </band>
+    </title>
+
+    <columnHeader>
+        <band height="20">
+            <rectangle>
+                <reportElement x="0" y="0" width="555" height="20" backcolor="#D9ECFF" mode="Opaque"/>
+            </rectangle>
+            <staticText><reportElement x="0" y="2" width="75" height="16"/><textElement><font isBold="true"/></textElement><text><![CDATA[Tanggal]]></text></staticText>
+            <staticText><reportElement x="78" y="2" width="95" height="16"/><textElement><font isBold="true"/></textElement><text><![CDATA[Invoice]]></text></staticText>
+            <staticText><reportElement x="176" y="2" width="150" height="16"/><textElement><font isBold="true"/></textElement><text><![CDATA[Pelanggan]]></text></staticText>
+            <staticText><reportElement x="329" y="2" width="70" height="16"/><textElement><font isBold="true"/></textElement><text><![CDATA[Metode]]></text></staticText>
+            <staticText><reportElement x="402" y="2" width="70" height="16"/><textElement textAlignment="Right"><font isBold="true"/></textElement><text><![CDATA[Nominal]]></text></staticText>
+            <staticText><reportElement x="475" y="2" width="80" height="16"/><textElement><font isBold="true"/></textElement><text><![CDATA[Keterangan]]></text></staticText>
+        </band>
+    </columnHeader>
+
+    <detail>
+        <band height="18">
+            <textField><reportElement x="0" y="1" width="75" height="16"/><textFieldExpression><![CDATA[$F{paymentDate}]]></textFieldExpression></textField>
+            <textField><reportElement x="78" y="1" width="95" height="16"/><textFieldExpression><![CDATA[$F{invoiceNo}]]></textFieldExpression></textField>
+            <textField><reportElement x="176" y="1" width="150" height="16"/><textFieldExpression><![CDATA[$F{customerName}]]></textFieldExpression></textField>
+            <textField><reportElement x="329" y="1" width="70" height="16"/><textFieldExpression><![CDATA[$F{paymentMethod}]]></textFieldExpression></textField>
+            <textField pattern="'Rp' #,##0">
+                <reportElement x="402" y="1" width="70" height="16"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight"><reportElement x="475" y="1" width="80" height="16"/><textFieldExpression><![CDATA[$F{note}]]></textFieldExpression></textField>
+        </band>
+    </detail>
+
+    <summary>
+        <band height="36">
+            <line><reportElement x="0" y="4" width="555" height="1"/></line>
+            <staticText>
+                <reportElement x="320" y="10" width="120" height="20"/>
+                <textElement textAlignment="Right"><font isBold="true"/></textElement>
+                <text><![CDATA[Total Kas Masuk]]></text>
+            </staticText>
+            <textField pattern="'Rp' #,##0">
+                <reportElement x="443" y="10" width="112" height="20"/>
+                <textElement textAlignment="Right"><font isBold="true"/></textElement>
+                <textFieldExpression><![CDATA[$P{totalCashIn}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+</jasperReport>
